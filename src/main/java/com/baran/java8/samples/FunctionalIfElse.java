@@ -2,6 +2,7 @@ package com.baran.java8.samples;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.extern.slf4j.Slf4j;
 
 import java.util.Objects;
 import java.util.Optional;
@@ -10,9 +11,9 @@ import java.util.function.BiFunction;
 import java.util.function.Function;
 import java.util.function.Predicate;
 
+@Slf4j
 public class FunctionalIfElse {
     public static void main(String[] args) {
-
         Product product1 = new Product(1, "Audi A8");
         String category1 = "car";
         System.out.println(ProductProxy.getEnrichedProduct.apply(product1, category1).toString());
@@ -36,6 +37,7 @@ public class FunctionalIfElse {
 
 @AllArgsConstructor
 @Data
+@Slf4j
 class Product {
     private int productId;
     private String productName;
@@ -50,9 +52,9 @@ class ProductProxy {
         Predicate<String> checkIsMobile = productCategory -> productCategory.equalsIgnoreCase("mobile") ? true : false;
         Predicate<String> checkIsLaptop = productCategory -> productCategory.equalsIgnoreCase("laptop") ? true : false;
 
-        Optional.ofNullable(category).filter(checkIsCar).map(input -> ProductService.enrichProductForCar.apply(inputProduct)).map(Optional::of).ifPresent(returnedProduct -> outputProduct.set(returnedProduct.get()));
-        Optional.ofNullable(category).filter(checkIsMobile).map(input -> ProductService.enrichProductForMobile.apply(inputProduct)).map(Optional::of).ifPresent(returnedProduct -> outputProduct.set(returnedProduct.get()));
-        Optional.ofNullable(category).filter(checkIsLaptop).map(input -> ProductService.enrichProductForLaptop.apply(inputProduct)).map(Optional::of).ifPresent(returnedProduct -> outputProduct.set(returnedProduct.get()));
+        Optional.ofNullable(category).filter(checkIsCar).map(input -> ProductService.enrichProductForCar.apply(inputProduct)).ifPresent(returnedProduct -> outputProduct.set(returnedProduct));
+        Optional.ofNullable(category).filter(checkIsMobile).map(input -> ProductService.enrichProductForMobile.apply(inputProduct)).ifPresent(returnedProduct -> outputProduct.set(returnedProduct));
+        Optional.ofNullable(category).filter(checkIsLaptop).map(input -> ProductService.enrichProductForLaptop.apply(inputProduct)).ifPresent(returnedProduct -> outputProduct.set(returnedProduct));
 
         Optional.ofNullable(outputProduct.get()).orElseThrow(() -> new RuntimeException("This is not a valid category"));
 
