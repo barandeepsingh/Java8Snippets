@@ -2,21 +2,21 @@ package com.baran.java8.samples.Optional;
 
 import java.util.Optional;
 
-public class ChainingOptionalsMap {
-    public static Double multiplyBy2(double n) {
-        return n * 2;
+public class ChainingOptionalsFlatMap {
+    public static Optional<Double> multiplyBy2(double n) {
+        return Optional.of(n * 2);
     }
 
-    public static Double divideBy3(double n) {
-        return n / 3;
+    public static Optional<Double> divideBy3(double n) {
+        return Optional.of(n / 3);
     }
 
-    public static Double round(double n) {
-        return (double) Math.round(n);
+    public static Optional<Double> round(double n) {
+        return Optional.of(Double.valueOf(Math.round(n)));
     }
 
     public static Optional<Double> applyOperation(double n1) {
-        return Optional.of(n1).map(n -> multiplyBy2(n1)).map(n -> divideBy3(n)).map(n -> round(n));
+        return multiplyBy2(n1).flatMap(ChainingOptionalsFlatMap::divideBy3).flatMap(ChainingOptionalsFlatMap::round);
     }
 
     public static void main(String[] args) {

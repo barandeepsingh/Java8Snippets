@@ -1,33 +1,56 @@
 package com.baran.java8.samples.concurrency;
 
-import java.util.Arrays;
-import java.util.List;
-import java.util.concurrent.ExecutionException;
+import lombok.extern.slf4j.Slf4j;
+
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
-import java.util.stream.Stream;
+import java.util.stream.IntStream;
 
+@Slf4j
 public class ConcurrencyService {
-    private static List<String> assetClassesList = Arrays.asList("FX", "Credit", "Equity", "InterestRate");
 
-    public static void main(String[] args) throws InterruptedException {
-        ExecutorService executorService = Executors.newFixedThreadPool(4);
+    public static void main(String[] args) {
+        ExecutorService executorService = Executors.newFixedThreadPool(10);
+        IntStream.range(1, 100).forEach(i -> CompletableFuture.supplyAsync(() -> getOrder(i), executorService)
+                .thenApply(ConcurrencyService::enrich)
+                .thenApply(ConcurrencyService::performPayment)
+                .thenApply(ConcurrencyService::dispatch)
+                .thenApply(ConcurrencyService::sendMail)
+                .thenApply(Order::toString)
+                .thenAccept(log::info)
+                .thenRun(() -> log.info("Execution completed for order {} by thread {}",i,Thread.currentThread().getName()))
+        );
 
-        assetClassesList.stream().forEach(assetClass -> {
-            ValuationBuilder valuationBuilder = ValuationBuilder.create(5000, 10, 20000).assetClass(assetClass).jurisdiction("KRX");
-            Future<Stream<String>> futureItem = executorService.submit(valuationBuilder);
-            try {
-                futureItem.get().forEach(System.out::println);
+    }
 
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            } catch (ExecutionException e) {
-                e.printStackTrace();
-            }
+    private static Order sendMail(Order order) {
+        log.info("Sent mail for " + order.getOrderName());
+        order.setMailSent(true);
+        return order;
+    }
 
 
-        });
-        executorService.shutdown();
+    private static Order dispatch(Order order) {
+        log.info("Dispatched for " + order.getOrderName());
+        order.setDispatched(true);
+        return order;
+    }
+
+    private static Order performPayment(Order order) {
+        log.info("Paid for " + order.getOrderName());
+        order.setPaid(true);
+        return order;
+    }
+
+    private static Order enrich(Order order) {
+        log.info("Enriched for " + order.getOrderName());
+        order.setPrice(order.getPrice() * 2);
+        return order;
+    }
+
+    private static Order getOrder(int orderId) {
+        return new Order(orderId, "Order" + orderId, 100, false, false, false);
     }
 }
+

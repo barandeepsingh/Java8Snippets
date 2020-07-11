@@ -2,7 +2,7 @@ package com.baran.java8.samples.Optional;
 
 import java.util.Optional;
 
-public class ChainingOptionals {
+public class ChainingOptionalsMap {
     public static Double multiplyBy2(double n) {
         return n * 2;
     }
@@ -16,7 +16,7 @@ public class ChainingOptionals {
     }
 
     public static Optional<Double> applyOperation(double n1) {
-        return Optional.of(n1).map(n -> multiplyBy2(n1)).map(n -> divideBy3(n)).map(n -> round(n));
+        return Optional.of(n1).map(ChainingOptionalsMap::multiplyBy2).map(ChainingOptionalsMap::divideBy3).map(ChainingOptionalsMap::round);
     }
 
     public static void main(String[] args) {
