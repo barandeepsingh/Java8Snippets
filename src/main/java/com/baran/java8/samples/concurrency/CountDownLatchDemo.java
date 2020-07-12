@@ -12,29 +12,29 @@ import java.util.stream.IntStream;
 
 @Slf4j
 public class CountDownLatchDemo {
-    public static void main(String[] args) {
+    public static void main(String[] args) throws InterruptedException {
         ExecutorService executorService = Executors.newFixedThreadPool(10);
         CountDownLatch latch = new CountDownLatch(10);
-        IntStream.range(1, 100).forEach(i -> {
+        IntStream.range(1, 11).forEach(i ->
             CompletableFuture.supplyAsync(() -> getOrder(i), executorService)
-                    .thenApply(order -> enrich(order))
-                    .thenApply(order -> performPayment(order))
-                    .thenApply(order -> dispatch(order))
-                    .thenApply(order -> sendMail(order))
-                    .thenAccept(order -> System.out.println(order.toString()))
+                    .thenApply(CountDownLatchDemo::enrich)
+                    .thenApply(CountDownLatchDemo::performPayment)
+                    .thenApply(CountDownLatchDemo::dispatch)
+                    .thenApply(CountDownLatchDemo::sendMail)
+                    .thenApply(Order::toString)
+                    .thenAccept(log::info)
                     .thenRun(() -> {
-                        System.out.println("------------------------------------------------------------");
-                        System.out.println("Completed processing of " + Thread.currentThread().getName());
-                        System.out.println("------------------------------------------------------------");
-                    });
-        });
-        try {
-            latch.await();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
+                        log.info("------------------------------------------------------------");
+                        log.info("Execution completed for order {} by thread {}",i,Thread.currentThread().getName());
+                        log.info("------------------------------------------------------------");
+                        latch.countDown();
+                    })
+        );
+        executorService.shutdown();
+        latch.await();
+        log.info("Program execution completed");
 
-        System.out.println("Program execution completed");
+
     }
 
     private static Order sendMail(Order order) {
@@ -63,7 +63,17 @@ public class CountDownLatchDemo {
     }
 
     private static Order getOrder(int orderId) {
+        pauseThread();
+        log.info("Getting order for order {}",orderId);
         return new Order(orderId, "Order" + orderId, 100, false, false, false);
+    }
+
+    private static void pauseThread() {
+        try {
+            Thread.sleep(1000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
     }
 }
 
