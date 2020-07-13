@@ -8,7 +8,6 @@ version '1.0-SNAPSHOT'
 repositories {
     mavenCentral()
 }
-
 dependencies {
     testCompile group: 'junit', name: 'junit', version: '4.12'
     compile 'org.projectlombok:lombok:1.18.12'
@@ -18,4 +17,11 @@ dependencies {
     compile group: 'org.slf4j', name: 'slf4j-api', version: '1.7.30'
     compile group: 'org.slf4j', name: 'slf4j-simple', version: '1.7.30'
     compile group: 'org.apache.logging.log4j', name: 'log4j-core', version: '2.13.3'
+    compile group: 'org.kie', name: 'kie-api', version: '7.40.0.Final'
+    compile group: 'org.kie', name: 'kie-ci', version: '7.40.0.Final'
+    compile group: 'org.drools', name: 'drools-core', version: '7.40.0.Final'
+    compile group: 'org.drools', name: 'drools-decisiontables', version: '7.40.0.Final'
+    compile group: 'org.drools', name: 'drools-compiler', version: '7.40.0.Final'
+    compile group: 'org.drools', name: 'drools-workbench-models-guided-dtable', version: '7.40.0.Final'
+
 }
