@@ -12,7 +12,7 @@ public class Customer {
     private CustomerLifeStage lifeStage;
     private CustomerAssets assets;
     private List<CustomerNeed> customerNeeds = new ArrayList<>();
-
+    private List<String> xPaths;
     public void addNeed(CustomerNeed need) {
         customerNeeds.add(need);
     }

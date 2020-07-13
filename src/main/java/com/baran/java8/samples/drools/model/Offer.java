@@ -12,9 +12,12 @@ public class Offer {
     private ProductPackage financialPackage;
     private List<Product> products = new ArrayList();
     private int discount;
-    public void addSingleProduct(Product prod){
+    private int xPathResponse;
+
+    public void addSingleProduct(Product prod) {
         products.add(prod);
     }
+
 
     public enum Product {
         LOAN,
