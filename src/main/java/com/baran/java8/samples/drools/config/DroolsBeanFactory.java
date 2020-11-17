@@ -41,8 +41,6 @@ public class DroolsBeanFactory {
         configuration.setInputType(DecisionTableInputType.XLSX);
         Resource dt = ResourceFactory.newClassPathResource(excelFile, getClass());
         DecisionTableProviderImpl decisionTableProvider = new DecisionTableProviderImpl();
-        String drl = decisionTableProvider.loadFromResource(dt,null);
-
-        return drl;
+        return decisionTableProvider.loadFromResource(dt,null);
     }
 }

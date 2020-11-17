@@ -12,7 +12,7 @@ public class LoopsDemo {
     public static void main(String[] args) {
         int start = 1;
         int end = 1_000_000_000;
-
+        System.out.println(Runtime.getRuntime().availableProcessors());
         LocalDateTime startTime = LocalDateTime.now();
         log.info("Started execution");
         int sum = IntStream.rangeClosed(start, end).sum();

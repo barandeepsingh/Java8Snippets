@@ -20,11 +20,15 @@ public class ConcurrencyService {
                 .thenApply(Order::toString)
                 .thenAccept(log::info)
                 .thenRun(() -> log.info("Execution completed for order {} by thread {}",i,Thread.currentThread().getName()))
-        );
 
+        );
     }
 
     private static Order sendMail(Order order) {
+        if(order.getOrderId()==9){
+            log.error("Invalid order");
+            throw new RuntimeException("Testing exception");
+        }
         log.info("Sent mail for " + order.getOrderName());
         order.setMailSent(true);
         return order;
@@ -50,6 +54,7 @@ public class ConcurrencyService {
     }
 
     private static Order getOrder(int orderId) {
+        log.info("Getting order for order {}",orderId);
         return new Order(orderId, "Order" + orderId, 100, false, false, false);
     }
 }

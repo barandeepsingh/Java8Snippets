@@ -28,7 +28,7 @@ public class DiscountExcelIntegrationTest {
     }
 
     @Test
-    public void giveIndvidualLongStanding_whenFireRule_thenCorrectDiscount() throws Exception {
+    public void test1() throws Exception {
         // Add a Customer with its personal data and needs, used for the LHS Decision
         log.info("Inside giveIndvidualLongStanding_whenFireRule_thenCorrectDiscount");
         Customer customer = new Customer();

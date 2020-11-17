@@ -8,15 +8,15 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Slf4j
-public class ForLoopsDemo {
+public class ForIntClassLoopsDemo {
     public static void main(String[] args) {
         List<Long> timeToProcess = new ArrayList<>();
-        int sum = 0;
-        int end = 1_000_000_000;
+        Integer end = 1_000_000_000;
+        Integer sum=0;
         log.info("Started execution");
-        for (int i = 0; i < 100; i++) {
+        for (Integer i = 0; i < 1; i++) {
             LocalDateTime startTime = LocalDateTime.now();
-            for (int j = 0; j < end; j++) {
+            for (Integer j = 0; j < end; j++) {
                 sum += j;
 //                log.info("Int stream sum is {}", sum);
             }
