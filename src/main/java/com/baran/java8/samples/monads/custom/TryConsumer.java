@@ -1,4 +1,5 @@
 package com.baran.java8.samples.monads.custom;
+
 /**
  * This is similar to the Java {@link java.util.function.Consumer Consumer} function type.
  * It has a checked exception on it to allow it to be used in lambda expressions on the Try monad.
@@ -6,6 +7,7 @@ package com.baran.java8.samples.monads.custom;
  * @param <T>
  * @param <E> the type of throwable thrown by {@link #accept(Object)}
  */
+@FunctionalInterface
 public interface TryConsumer<T, E extends Throwable> {
 
     /**

@@ -1,49 +1,56 @@
 package com.baran.java8.samples.monads.custom;
 
+import java.util.function.BiFunction;
+import java.util.function.Supplier;
+
 public class TryMonadTestCases {
-    public static Try<Integer> trySum() {
-        return Try.of(() -> 5 + 6);
-    }
 
-    public static Try<Integer> tryDivision(final int a, final int b) {
-        return Try.of(() -> a / b);
-    }
+    private static final BiFunction<Integer,Integer,Try<Integer>> trySum =
+            (a,b) ->Try.of(() -> a + b);
 
-    public static void main(String[] args) throws Throwable {
-        trySum()
-                .onSuccess(result -> {
-                    System.out.println("Do whatever you want to do with the sum value.Write a lambda.");
-                    System.out.println("Value of sum is " + result);
-                })
-                .onFailure(ex -> {
-                    System.err.println("This is error path");
-                    System.err.println("Print exception here or do something else.");
-                })
-                .orElse(0);//This can be used to provide a default value in case success path fails.
+    private static final BiFunction<Integer,Integer,Try<Integer>> tryDivision =
+            (a,b) ->Try.of(() -> a / b);
 
-//Happy path
-        tryDivision(10, 5)
-                .onSuccess(result -> {
-                    System.out.println("Value of div is " + result);
-                })
-                .onFailure(ex -> {
-                    System.err.println("This is error path");
-                    System.err.println(ex.getMessage());
-                })
+    private static final Supplier<Try<Integer>> mapSample = () ->
+            Try.of(() -> 5 + 6)
+                    .map(e -> e * 2);
+
+    private static final Procedure trySumPositiveTestCase = () ->
+        trySum.apply(5,6)
+                .onSuccess(result ->
+                    System.out.println("Do whatever you want to do with the sum value.Write a lambda.Value of sum is " + result))
+                .onFailure(ex ->
+                    System.err.println("This is error path"+ex.getMessage()))
                 .orElse(0);//This can be used to provide a default value in case success path fails.
 
 
-//Non-happy path
-        tryDivision(3, 0)
-                .onSuccess(result -> {
-                    System.out.println("Value of div is " + result);
-                })
-                .onFailure(ex -> {
-                    System.err.println("This is error path");
-                    System.err.println(ex);
-                })
+    private static final Procedure happyPathDivision = () -> //Happy path sample
+        tryDivision.apply(10, 5)
+                .onSuccess(result -> System.out.println("Value of div is " + result))
+                .onFailure(ex -> System.err.println("This is error path" + ex.getMessage()))
+                .orElse(0);//This can be used to provide a default value in case success path fails.
+
+
+    private static final Procedure nonHappyPathDivision = () ->
+        //Non-happy path sample
+        tryDivision.apply(3, 0)
+                .onSuccess(result ->
+                        System.out.println("Value of div is " + result))
+                .onFailure(ex ->
+                        System.err.println("This is error path " + ex.getMessage()))
                 .orElse(10);//This can be used to provide a default value in case success path fails.
 
+    private static final Procedure mapSampleDemo = () ->
+            mapSample.get()
+                .onSuccess(e -> System.out.println("mapSampleDemo is " + e))
+                .onFailure(ex -> System.err.println("mapSampleDemo exception " + ex.getMessage()));
+
+
+    public static void main(String[] args) throws Throwable {
+        trySumPositiveTestCase.invoke();
+        happyPathDivision.invoke();
+        nonHappyPathDivision.invoke();
+        mapSampleDemo.invoke();
     }
 
 }

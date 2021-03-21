@@ -1,8 +1,5 @@
 package com.baran.java8.samples.monads;
 
-
-import org.apache.maven.model.building.Result;
-
 import java.util.Objects;
 import java.util.Optional;
 import java.util.function.Function;
@@ -41,6 +38,7 @@ public class Try<V, E extends Throwable> {
                 .map(e -> Try.<T, E>failure(e))
                 .orElseGet(() -> Try.success(mapper.apply(value)));
     }
+
     public V orElseThrow() throws E {
         return Optional.ofNullable(value).orElseThrow(() -> error);
     }

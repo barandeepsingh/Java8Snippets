@@ -44,7 +44,7 @@ public abstract class Try<T> {
      * @return Success&lt;U&gt; or Failure&lt;U&gt;
      */
 
-    public abstract <U> Try<U> map(TryMapFunction<? super T, ? extends U> f);
+    public abstract <U> Try<U> map(TryFunction<? super T, ? extends U> f);
 
     /**
      * Transform success or pass on failure, taking a Try&lt;U&gt; as the result.
@@ -58,7 +58,7 @@ public abstract class Try<T> {
      * @param <U> new type (optional)
      * @return new composed Try
      */
-    public abstract <U> Try<U> flatMap(TryMapFunction<? super T, Try<U>> f);
+    public abstract <U> Try<U> flatMap(TryFunction<? super T, Try<U>> f);
 
     /**
      * Specifies a result to use in case of failure.
@@ -80,7 +80,7 @@ public abstract class Try<T> {
      * @param f function that takes throwable and returns result
      * @return a new Try in the case of failure, or the current Success.
      */
-    public abstract Try<T> recoverWith(TryMapFunction<? super Throwable, Try<T>> f);
+    public abstract Try<T> recoverWith(TryFunction<? super Throwable, Try<T>> f);
 
     /**
      * Return a value in the case of a failure.
@@ -188,7 +188,7 @@ class Success<T> extends Try<T> {
     }
 
     @Override
-    public <U> Try<U> flatMap(TryMapFunction<? super T, Try<U>> f) {
+    public <U> Try<U> flatMap(TryFunction<? super T, Try<U>> f) {
         Objects.requireNonNull(f);
         try {
             return f.apply(value);
@@ -204,7 +204,7 @@ class Success<T> extends Try<T> {
     }
 
     @Override
-    public Try<T> recoverWith(TryMapFunction<? super Throwable, Try<T>> f) {
+    public Try<T> recoverWith(TryFunction<? super Throwable, Try<T>> f) {
         Objects.requireNonNull(f);
         return this;
     }
@@ -236,7 +236,7 @@ class Success<T> extends Try<T> {
     }
 
     @Override
-    public <U> Try<U> map(TryMapFunction<? super T, ? extends U> f) {
+    public <U> Try<U> map(TryFunction<? super T, ? extends U> f) {
         Objects.requireNonNull(f);
         try {
             return new Success<>(f.apply(value));
@@ -287,13 +287,13 @@ class Failure<T> extends Try<T> {
     }
 
     @Override
-    public <U> Try<U> map(TryMapFunction<? super T, ? extends U> f) {
+    public <U> Try<U> map(TryFunction<? super T, ? extends U> f) {
         Objects.requireNonNull(f);
         return Try.failure(e);
     }
 
     @Override
-    public <U> Try<U> flatMap(TryMapFunction<? super T, Try<U>> f) {
+    public <U> Try<U> flatMap(TryFunction<? super T, Try<U>> f) {
         Objects.requireNonNull(f);
         return Try.failure(e);
     }
@@ -305,7 +305,7 @@ class Failure<T> extends Try<T> {
     }
 
     @Override
-    public Try<T> recoverWith(TryMapFunction<? super Throwable, Try<T>> f) {
+    public Try<T> recoverWith(TryFunction<? super Throwable, Try<T>> f) {
         Objects.requireNonNull(f);
         try{
             return f.apply(e);
