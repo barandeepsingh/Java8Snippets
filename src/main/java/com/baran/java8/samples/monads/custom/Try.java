@@ -3,6 +3,7 @@ package com.baran.java8.samples.monads.custom;
 import java.util.NoSuchElementException;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
@@ -178,6 +179,8 @@ public abstract class Try<T> {
     public static <U> Try<U> successful(U x) {
         return new Success<>(x);
     }
+
+
 }
 
 class Success<T> extends Try<T> {
