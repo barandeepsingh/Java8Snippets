@@ -2,8 +2,9 @@ package com.baran.java8.samples.monads.custom;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.IOException;
 import java.util.function.BiFunction;
+import java.util.function.Consumer;
+import java.util.function.Function;
 import java.util.function.Supplier;
 
 public class TryMonadTestCases {
@@ -49,31 +50,37 @@ public class TryMonadTestCases {
                     .onSuccess(e -> System.out.println("mapSampleDemo is " + e))
                     .onFailure(ex -> System.err.println("mapSampleDemo exception " + ex.getMessage()));
 
+
     private static final Supplier<Try<FileInputStream>> checkedExceptionWithTryMonad = () ->
             Try.of(() ->
 //                    new FileInputStream(new File("not_existing_file.txt")));
                     new FileInputStream(new File("build.gradle")));
 
+
+    private static final Function<FileInputStream, Try<Character>> getCharacter = fileInputStream ->
+//            Try.of(() -> (char) fileInputStream.read());
+            Try.failure(new RuntimeException("Failed badly"));
+
+    private static final Consumer<FileInputStream> getCharacterForFileInputStream = fileInputStream ->
+        getCharacter.apply(fileInputStream)
+                .onSuccess(System.out::println)
+                .onFailure(System.err::println)
+                .orElseTry(()-> {
+                    System.out.println("Recovering using else try");
+                    return 'a';
+                }).getUnchecked();
+
     private static final Procedure demoPowerOfTryMonadForCheckedExceptions = () ->
-    {
-        try {
             checkedExceptionWithTryMonad.get()
-                    .onSuccess(e -> {
-                        System.out.println((char)e.read());
-                        System.out.println("Testing");
-                    })
+                    .onSuccess(getCharacterForFileInputStream::accept)
                     .onFailure(ex -> System.err.println(ex.getMessage()));
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    };
 
     public static void main(String[] args) throws Throwable {
         trySumPositiveTestCase.invoke();
         happyPathDivision.invoke();
         nonHappyPathDivision.invoke();
         mapSampleDemo.invoke();
-//        demoPowerOfTryMonadForCheckedExceptions.invoke();
+        demoPowerOfTryMonadForCheckedExceptions.invoke();
     }
 
 }

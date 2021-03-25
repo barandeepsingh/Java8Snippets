@@ -3,18 +3,14 @@ package com.baran.java8.samples.monads.custom;
 import java.util.NoSuchElementException;
 import java.util.Objects;
 import java.util.Optional;
-import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
 
 /**
- * Monadic Try type.
+ * Monadic Try type inspired by Scala.
  * Represents a result type that could have succeeded with type T or failed with a Throwable.
- * Originally was Exception but due to seeing issues with eg play with checked Throwable,
- * And also seeing that Scala deals with throwable,
- * I made the decision to change it to use Throwable.
- *
+ * 
  * @param <T>
  */
 
@@ -37,7 +33,7 @@ public abstract class Try<T> {
      * Transform success or pass on failure.
      * Takes an optional type parameter of the new type.
      * You need to be specific about the new type if changing type
-     *
+     * <p>
      * Try.ofFailable(() -&gt; "1").&lt;Integer&gt;map((x) -&gt; Integer.valueOf(x))
      *
      * @param f   function to apply to successful value.
@@ -51,7 +47,7 @@ public abstract class Try<T> {
      * Transform success or pass on failure, taking a Try&lt;U&gt; as the result.
      * Takes an optional type parameter of the new type.
      * You need to be specific about the new type if changing type.
-     *
+     * <p>
      * Try.ofFailable(() -&gt; "1").&lt;Integer&gt;flatMap((x) -&gt; Try.ofFailable(() -&gt; Integer.valueOf(x)))
      * returns Integer(1)
      *
@@ -64,7 +60,7 @@ public abstract class Try<T> {
     /**
      * Specifies a result to use in case of failure.
      * Gives access to the exception which can be pattern matched on.
-     *
+     * <p>
      * Try.ofFailable(() -&gt; "not a number")
      * .&lt;Integer&gt;flatMap((x) -&gt; Try.ofFailable(() -&gt;Integer.valueOf(x)))
      * .recover((t) -&gt; 1)
@@ -78,6 +74,7 @@ public abstract class Try<T> {
 
     /**
      * Try applying f(t) on the case of failure.
+     *
      * @param f function that takes throwable and returns result
      * @return a new Try in the case of failure, or the current Success.
      */
@@ -120,6 +117,7 @@ public abstract class Try<T> {
 
     /**
      * Gets the value T on Success or throws the cause of the failure wrapped into a RuntimeException
+     *
      * @return T
      * @throws RuntimeException
      */
@@ -129,6 +127,7 @@ public abstract class Try<T> {
 
     /**
      * Performs the provided action, when successful
+     *
      * @param action action to run
      * @return new composed Try
      * @throws E if the action throws an exception
@@ -137,6 +136,7 @@ public abstract class Try<T> {
 
     /**
      * Performs the provided action, when failed
+     *
      * @param action action to run
      * @return new composed Try
      * @throws E if the action throws an exception
@@ -146,6 +146,7 @@ public abstract class Try<T> {
     /**
      * If a Try is a Success and the predicate holds true, the Success is passed further.
      * Otherwise (Failure or predicate doesn't hold), pass Failure.
+     *
      * @param pred predicate applied to the value held by Try
      * @return For Success, the same success if predicate holds true, otherwise Failure
      */
@@ -153,6 +154,7 @@ public abstract class Try<T> {
 
     /**
      * Try contents wrapped in Optional.
+     *
      * @return Optional of T, if Success, Empty if Failure or null value
      */
     public abstract Optional<T> toOptional();
@@ -160,7 +162,7 @@ public abstract class Try<T> {
     /**
      * Factory method for failure.
      *
-     * @param e throwable to create the failed Try with
+     * @param e   throwable to create the failed Try with
      * @param <U> Type
      * @return a new Failure
      */
@@ -172,7 +174,7 @@ public abstract class Try<T> {
     /**
      * Factory method for success.
      *
-     * @param x value to create the successful Try with
+     * @param x   value to create the successful Try with
      * @param <U> Type
      * @return a new Success
      */
@@ -310,9 +312,9 @@ class Failure<T> extends Try<T> {
     @Override
     public Try<T> recoverWith(TryFunction<? super Throwable, Try<T>> f) {
         Objects.requireNonNull(f);
-        try{
+        try {
             return f.apply(e);
-        }catch(Throwable t){
+        } catch (Throwable t) {
             return Try.failure(t);
         }
     }
