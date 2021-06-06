@@ -7,14 +7,13 @@ public class SelectionSort {
 //        int[] numbers = {5, 2, 9, 4, 11};
         int[] numbers = {5, 2, 9, 13, 11};
         sortNumbers(numbers);
-        Arrays.stream(numbers)
-                .forEach(System.out::println);
+        System.out.println(Arrays.toString(numbers));
     }
 
     private static void sortNumbers(int[] numbers) {
         int temp;
         for (int i = 0; i < numbers.length-1; i++) {
-            for (int j = i+i; j < numbers.length; j++) {
+            for (int j = i+1; j < numbers.length; j++) {
                 if (numbers[j] < numbers[i]) {
                     temp = numbers[i];
                     numbers[i] = numbers[j];
@@ -22,7 +21,5 @@ public class SelectionSort {
                 }
             }
         }
-
-
     }
 }
