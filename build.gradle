@@ -23,5 +23,7 @@ dependencies {
     compile group: 'org.drools', name: 'drools-decisiontables', version: '7.40.0.Final'
     compile group: 'org.drools', name: 'drools-compiler', version: '7.40.0.Final'
     compile group: 'org.drools', name: 'drools-workbench-models-guided-dtable', version: '7.40.0.Final'
+    compile group: 'xmlunit', name: 'xmlunit', version: '1.6'
+
 
 }
