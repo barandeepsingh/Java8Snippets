@@ -1,6 +1,7 @@
 package com.baran.samples;
 
 import java.util.Arrays;
+import java.util.Map;
 
 public class SelectionSort {
     public static void main(String[] args) {
@@ -8,6 +9,7 @@ public class SelectionSort {
         int[] numbers = {5, 2, 9, 13, 11};
         sortNumbers(numbers);
         System.out.println(Arrays.toString(numbers));
+        Map<String,String> map ;
     }
 
     private static void sortNumbers(int[] numbers) {
